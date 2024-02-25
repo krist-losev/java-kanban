@@ -55,7 +55,6 @@ public class TaskManager {
            System.out.println("Задачи с таким номером нет!");
            return null;
        }
-       // Получение по идентификатору
         return tasks.get(id);
     }
 
@@ -69,7 +68,6 @@ public class TaskManager {
 
     public Epic updateEpic(Epic updateEpic) { //обновление задачи
         Epic currentEpic = epics.get(updateEpic.getIdNumber());
-        //epics.put(updateEpic.getIdNumber(), currentEpic);
         currentEpic.setNameTask(updateEpic.getNameTask());
         currentEpic.setDescription(updateEpic.getDescription());
         return currentEpic;
@@ -99,7 +97,6 @@ public class TaskManager {
             System.out.println("Эпика с таким номером нет!");
             return null;
         }
-        // Получение по идентификатору
         return epics.get(id);
     }
 
@@ -139,8 +136,7 @@ public class TaskManager {
 
     }
     public ArrayList<Subtask> listSubtask() {//Получение списка всех задач
-
-        return new ArrayList<Subtask>( subtasks.values());
+        return new ArrayList<Subtask>(subtasks.values());
     }
     public Subtask getSubtaskById(int id){
         if (!subtasks.containsKey(id)) {
