@@ -1,3 +1,5 @@
+package Tasks;
+
 import java.util.Objects;
 
 public class Task {
@@ -14,9 +16,6 @@ public class Task {
         this.status = status;
         this.idNumber = idNumber;
     }
-
-
-
 
 
     @Override
@@ -73,4 +72,7 @@ public class Task {
         this.status = status;
     }
 }
+
+
+
 

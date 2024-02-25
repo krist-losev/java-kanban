@@ -1,3 +1,10 @@
+package Manager;
+
+import Tasks.Epic;
+import Tasks.Status;
+import Tasks.Subtask;
+import Tasks.Task;
+
 import java.util.ArrayList;
 
 public class Main {
@@ -25,11 +32,13 @@ public class Main {
         subtasks2.add(subtask2);
 
 
-        Epic epic1 = new Epic ("Сдать тз4", "Доделать дз и сдать его", 1);
+        Epic epic1 = new Epic("Сдать тз4", "Доделать дз и сдать его", 1);
         Epic epic2 = new Epic("Подготовиться на работу", "Опять вставать в пять утра:(", 2);
+        Epic epic3 = new Epic("Починить машину", "Срочно", 3);
 
         taskManager.addEpic(epic1);
         taskManager.addEpic(epic2);
+        taskManager.addEpic(epic3);
 
         taskManager.addTask(task0);
         taskManager.addTask(task);
@@ -40,17 +49,19 @@ public class Main {
 
         //Распечатайте списки эпиков, задач и подзадач
 
-        taskManager.listTask();
-        taskManager.listEpic();
-        taskManager.listSubtask();
+        System.out.println("Список задач: " + taskManager.listTask());
+        System.out.println("Список эпиков: " + taskManager.listEpic());
+        System.out.println("Список подзадач: " + taskManager.listSubtask());
+
+
 
         //удалить одну из задач
-        taskManager.deletedTaskId(1);
-        taskManager.listTask();
+        taskManager.deletedTaskId(4);
+        System.out.println("Список задач: " + taskManager.listTask());
 
 
         //удалить один из эпиков
         taskManager.deletedEpicId(2);
-        taskManager.listEpic();
+        System.out.println("Список эпиков: " + taskManager.listEpic());
     }
 }
