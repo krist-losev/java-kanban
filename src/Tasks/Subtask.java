@@ -1,7 +1,9 @@
+package Tasks;
+
 public class Subtask extends Task {
 
     private int idEpic;
-    private Status status;
+
 
 
     public Subtask(String name, String description, Status status, int idNumber, int idEpic) {
