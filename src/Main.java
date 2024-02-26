@@ -1,5 +1,4 @@
-package Manager;
-
+import Manager.TaskManager;
 import Tasks.Epic;
 import Tasks.Status;
 import Tasks.Subtask;
@@ -20,13 +19,15 @@ public class Main {
         Task task0 = new Task("Съесть сыр", "Пообедать", Status.NEW, 3);
         Task task = new Task("Искупаться", "Жариться в адском душе", Status.DONE, 4);
 
-        Subtask subtask0 = new Subtask("Дописать программу", "писааать", Status.IN_PROGRESS, 5, 1);
-        Subtask subtask1 = new Subtask("Проверить код", "Пропустить через дебагер", Status.NEW, 6, 1);
+        Subtask subtask0 = new Subtask("Дописать программу", "писааать", Status.DONE, 5, 1);
+        Subtask subtask1 = new Subtask("Проверить код", "Пропустить через дебагер", Status.IN_PROGRESS, 6, 1);
         Subtask subtask2 = new Subtask("Собрать обед на работу", "Обеееед", Status.DONE, 7, 2);
+        Subtask subtask3 = new Subtask("Дописать программу", "писааать", Status.DONE, 8, 1);
 
         ArrayList<Subtask> subtasks1 = new ArrayList<>();
         subtasks1.add(subtask0);
         subtasks1.add(subtask1);
+        subtasks1.add(subtask3);
 
         ArrayList<Subtask> subtasks2 = new ArrayList<>();
         subtasks2.add(subtask2);
@@ -46,6 +47,8 @@ public class Main {
         taskManager.addSubtask(subtask0);
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
+
 
         //Распечатайте списки эпиков, задач и подзадач
 
@@ -56,12 +59,12 @@ public class Main {
 
 
         //удалить одну из задач
-        taskManager.deletedTaskId(4);
+        taskManager.deleteTaskById(4);
         System.out.println("Список задач: " + taskManager.listTask());
 
 
         //удалить один из эпиков
-        taskManager.deletedEpicId(2);
+        taskManager.deleteEpicById(2);
         System.out.println("Список эпиков: " + taskManager.listEpic());
     }
 }
