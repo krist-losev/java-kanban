@@ -28,12 +28,12 @@ public class TaskManager {
         return newTask;
     }
 
-    public Task updateTask(Task updateTask) { //обновление задачи
+    public void updateTask(Task updateTask) { //обновление задачи
         Task currentTask = tasks.get(updateTask.getIdNumber());
         currentTask.setNameTask(updateTask.getNameTask());
         currentTask.setDescription(updateTask.getDescription());
         currentTask.setStatus(updateTask.getStatus());
-        return currentTask;
+        tasks.put(updateTask.getIdNumber(), currentTask);
     }
 
     public void deletedTaskId(int id) { //Удаление по идентификатору
@@ -66,11 +66,12 @@ public class TaskManager {
         return newEpic;
     }
 
-    public Epic updateEpic(Epic updateEpic) { //обновление задачи
+    public void updateEpic(Epic updateEpic) { //обновление задачи
         Epic currentEpic = epics.get(updateEpic.getIdNumber());
         currentEpic.setNameTask(updateEpic.getNameTask());
         currentEpic.setDescription(updateEpic.getDescription());
-        return currentEpic;
+        epics.put(updateEpic.getIdNumber(), currentEpic);
+
     }
 
     public void deletedEpicId(int id) {
@@ -116,6 +117,7 @@ public class TaskManager {
         currentSubtask.setNameTask(updateSubtask.getNameTask());
         currentSubtask.setDescription(updateSubtask.getDescription());
         currentSubtask.setStatus(updateSubtask.getStatus());
+        subtasks.put(updateSubtask.getIdNumber(), currentSubtask);
         updateEpic(epics.get(currentSubtask.getIdNumber()));
         updateStatus(epics.get(updateSubtask.getIdEpic()));
 
