@@ -27,7 +27,6 @@ public class TaskManager {
     }
 
     public void updateTask(Task updateTask) { //обновление задачи
-        Task currentTask = tasks.get(updateTask.getIdNumber());
         tasks.put(updateTask.getIdNumber(), updateTask);
     }
 
@@ -62,7 +61,6 @@ public class TaskManager {
     }
 
     public void updateEpic(Epic updateEpic) { //обновление задачи
-        Epic currentEpic = epics.get(updateEpic.getIdNumber());
         epics.put(updateEpic.getIdNumber(), updateEpic);
 
     }
@@ -106,7 +104,6 @@ public class TaskManager {
 
     }
     public void updateSubtask(Subtask updateSubtask) {
-        Subtask currentSubtask = subtasks.get(updateSubtask.getIdNumber());
         subtasks.put(updateSubtask.getIdNumber(), updateSubtask);
         updateEpic(epics.get(updateSubtask.getIdNumber()));
         updateStatus(epics.get(updateSubtask.getIdEpic()));
