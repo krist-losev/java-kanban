@@ -51,11 +51,11 @@ class TaskManagerTest {
 
     @Test
     void addTask_TheSpecifiedIDsAndTheGeneratedIDsDoNotConflict () {
-    Task newTask1 = new Task("Task2", "D2", Status.NEW);
-    Task newTask = new Task("Task1", "D1", Status.NEW, 1);
-    taskManager.addTask(newTask);
-    taskManager.addTask(newTask1);
-    Assertions.assertNotEquals(newTask1, newTask);
+        Task newTask1 = new Task("Task2", "D2", Status.NEW);
+        Task newTask = new Task("Task1", "D1", Status.NEW, 1);
+        taskManager.addTask(newTask);
+        taskManager.addTask(newTask1);
+        Assertions.assertNotEquals(newTask1, newTask);
 }
     @Test
     void inMemoryTaskManagerAddTaskEpicSubtaskAndGet () {
@@ -72,9 +72,17 @@ class TaskManagerTest {
     }
 
     @Test
-    void updateStatusEpic () {
-
+    void updateStatusEpicTest () {
+        Epic newEpic = new Epic("Name1", "D2", 1);
+        taskManager.addEpic(newEpic);
+        Subtask subtask0 = new Subtask("NameS1", "D2", Status.NEW, 2, 1);
+        Subtask subtask1 = new Subtask("NameS2", "L2", Status.IN_PROGRESS, 3, 1);
+        taskManager.addSubtask(subtask0);
+        taskManager.addSubtask(subtask1);
+        newEpic.addSubtasksInEpic(2);
+        newEpic.addSubtasksInEpic(3);
+        Assertions.assertEquals(Status.IN_PROGRESS, newEpic.getStatus());
     }
 
-    // проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;*/
+
 }

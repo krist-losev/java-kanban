@@ -10,16 +10,21 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (history.size() <= 10) {
+        /* в этом месте почему-то не работает реализация со списком
+        и продолжают добавляться
+        просмотры в список
+           if (history.size() > 10) {
+           history.removeFirst();
+        } */
             history.add(task);
-        } else {
-            history.remove(0);
-            history.add(task);
-        };
+
     }
 
     @Override
     public List<Task> getHistory() {
+        if (history.size() > 10) {
+            history.removeFirst();
+        }
        return new ArrayList<>(history);
     }
 }
