@@ -7,7 +7,6 @@ public class Task {
     private int idNumber;
     private String nameTask;
     private String description;
-
     private Status status;
 
     public Task(String name, String description, Status status, int idNumber) {
@@ -15,6 +14,13 @@ public class Task {
         this.description = description;
         this.status = status;
         this.idNumber = idNumber;
+    }
+
+    public Task (String name, String description, Status status) {
+        this.nameTask = name;
+        this.description = description;
+        this.status = status;
+
     }
 
 

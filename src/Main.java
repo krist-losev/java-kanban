@@ -1,3 +1,6 @@
+import Manager.HistoryManager;
+import Manager.InMemoryTaskManager;
+import Manager.Managers;
 import Manager.TaskManager;
 import Tasks.Epic;
 import Tasks.Status;
@@ -5,6 +8,7 @@ import Tasks.Subtask;
 import Tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -12,7 +16,8 @@ public class Main {
 
         System.out.println("Поехали!");
 
-        TaskManager taskManager = new TaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
+
 
         //Создайте две задачи, а также эпик с двумя подзадачами и эпик с одной подзадачей.
 
@@ -37,34 +42,41 @@ public class Main {
         Epic epic2 = new Epic("Подготовиться на работу", "Опять вставать в пять утра:(", 2);
         Epic epic3 = new Epic("Починить машину", "Срочно", 3);
 
-        taskManager.addEpic(epic1);
-        taskManager.addEpic(epic2);
-        taskManager.addEpic(epic3);
+        inMemoryTaskManager.addEpic(epic1);
+        inMemoryTaskManager.addEpic(epic2);
+        inMemoryTaskManager.addEpic(epic3);
 
-        taskManager.addTask(task0);
-        taskManager.addTask(task);
+        inMemoryTaskManager.addTask(task0);
+        inMemoryTaskManager.addTask(task);
 
-        taskManager.addSubtask(subtask0);
-        taskManager.addSubtask(subtask1);
-        taskManager.addSubtask(subtask2);
-        taskManager.addSubtask(subtask3);
+        inMemoryTaskManager.addSubtask(subtask0);
+        inMemoryTaskManager.addSubtask(subtask1);
+        inMemoryTaskManager.addSubtask(subtask2);
+        inMemoryTaskManager.addSubtask(subtask3);
 
 
         //Распечатайте списки эпиков, задач и подзадач
 
-        System.out.println("Список задач: " + taskManager.listTask());
-        System.out.println("Список эпиков: " + taskManager.listEpic());
-        System.out.println("Список подзадач: " + taskManager.listSubtask());
+        System.out.println("Список задач: " + inMemoryTaskManager.listTask());
+        System.out.println("Список эпиков: " + inMemoryTaskManager.listEpic());
+        System.out.println("Список подзадач: " + inMemoryTaskManager.listSubtask());
 
 
 
         //удалить одну из задач
-        taskManager.deleteTaskById(4);
-        System.out.println("Список задач: " + taskManager.listTask());
+        inMemoryTaskManager.deleteTaskById(4);
+        System.out.println("Список задач: " + inMemoryTaskManager.listTask());
 
 
         //удалить один из эпиков
-        taskManager.deleteEpicById(2);
-        System.out.println("Список эпиков: " + taskManager.listEpic());
+        inMemoryTaskManager.deleteEpicById(2);
+        System.out.println("Список эпиков: " + inMemoryTaskManager.listEpic());
+
+        inMemoryTaskManager.getSubtaskById(6);
+        List<Task> hh = inMemoryTaskManager.getHistory();
+        System.out.println("История: " + hh);
+        inMemoryTaskManager.getEpicById(3);
+        List<Task> hhh = inMemoryTaskManager.getHistory();
+        System.out.println("История: " + hhh);
     }
 }
