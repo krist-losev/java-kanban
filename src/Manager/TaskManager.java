@@ -16,7 +16,7 @@ public interface TaskManager {
 
     void clearTask();
 
-    ArrayList<Task> listTask();//Получение списка всех задач
+    List<Task> listTask();//Получение списка всех задач
 
 
     Task getTaskById(int id);
@@ -29,7 +29,7 @@ public interface TaskManager {
 
     void clearEpic();
 
-    ArrayList<Epic> listEpic();//Получение списка всех задач
+    List<Epic> listEpic();//Получение списка всех задач
 
 
     Epic getEpicById(int id);
@@ -42,7 +42,7 @@ public interface TaskManager {
 
     void deleteSubtask();
 
-    ArrayList<Subtask> listSubtask();
+    List<Subtask> listSubtask();
 
     Subtask getSubtaskById(int id);
 

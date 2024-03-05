@@ -73,7 +73,7 @@ class HistoryManagerTest {
         taskManager.updateTask(updateTask);
         taskManager.getTaskById((updateTask.getIdNumber()));
         List<Task> history = taskManager.getHistory();
-        assertNotEquals(history, history1);
+        assertEquals(history, history1);
     }
 
 

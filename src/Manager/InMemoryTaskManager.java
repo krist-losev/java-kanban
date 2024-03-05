@@ -8,14 +8,15 @@ import Tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class InMemoryTaskManager implements TaskManager {
 
     private int idTask = 1;
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
+    private Map<Integer, Task> tasks = new HashMap<>();
+    private Map<Integer, Subtask> subtasks = new HashMap<>();
+    private Map<Integer, Epic> epics = new HashMap<>();
 
     private  HistoryManager historyManager;
 
@@ -48,7 +49,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> listTask() {
+    public List<Task> listTask() {
         return new ArrayList<Task>(tasks.values());
     }//Получение списка всех задач
 
@@ -95,7 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Epic> listEpic() {
+    public List<Epic> listEpic() {
         return new ArrayList<Epic>(epics.values());
     }//Получение списка всех задач
 
@@ -105,7 +106,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Эпика с таким номером нет!");
             return null;
         }
-        Epic epic = epics.get(id);
+       Epic epic = epics.get(id);
         historyManager.add(epic);
         return epic;
     }
@@ -147,7 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Subtask> listSubtask() {//Получение списка всех задач
+    public List<Subtask> listSubtask() {//Получение списка всех задач
         return new ArrayList<Subtask>(subtasks.values());
     }
 
