@@ -1,9 +1,9 @@
-package Manager;
+package manager;
 
-import Tasks.Epic;
-import Tasks.Status;
-import Tasks.Subtask;
-import Tasks.Task;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> listTask() {
         return new ArrayList<Task>(tasks.values());
-    }//Получение списка всех задач
+    } //Получение списка всех задач
 
    @Override
    public Task getTaskById(int id) {
@@ -98,7 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Epic> listEpic() {
         return new ArrayList<Epic>(epics.values());
-    }//Получение списка всех задач
+    } //Получение списка всех задач
 
    @Override
    public Epic getEpicById(int id) {
@@ -148,12 +148,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Subtask> listSubtask() {//Получение списка всех задач
+    public List<Subtask> listSubtask() { //Получение списка всех задач
         return new ArrayList<Subtask>(subtasks.values());
     }
 
     @Override
-    public Subtask getSubtaskById(int id){
+    public Subtask getSubtaskById(int id) {
         if (!subtasks.containsKey(id)) {
             System.out.println("Подзадачи с таким номером нет!");
             return null;
@@ -164,7 +164,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> getHistory () {
+    public List<Task> getHistory() {
 
         return historyManager.getHistory();
     }
