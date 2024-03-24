@@ -1,11 +1,9 @@
-package Test;
-
-import Manager.Managers;
-import Manager.TaskManager;
-import Tasks.Epic;
-import Tasks.Status;
-import Tasks.Subtask;
-import Tasks.Task;
+import manager.Managers;
+import manager.TaskManager;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +16,13 @@ class HistoryManagerTest {
     TaskManager taskManager;
 
     @BeforeEach
-    void beforeEach () {
+    void beforeEach() {
         taskManager = Managers.getDefault();
 
     }
 
     @Test
-    void addTaskEpicSubtaskToHistory () {
+    void addTaskEpicSubtaskToHistory() {
         Task newTask = new Task("Task1", "D1", Status.NEW, 1);
         taskManager.addTask(newTask);
         Epic newEpic = new Epic("Ep2", "D1", 2);
@@ -40,7 +38,7 @@ class HistoryManagerTest {
     }
 
     @Test
-    void HistorySizeEqualsTen () {
+    void historySizeEqualsTen() {
         Task newTask = new Task("Task1", "D1", Status.NEW, 1);
         taskManager.addTask(newTask);
         Epic newEpic = new Epic("Ep2", "D1", 2);

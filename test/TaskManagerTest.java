@@ -1,11 +1,9 @@
-package Test;
-
-import Manager.Managers;
-import Manager.TaskManager;
-import Tasks.Epic;
-import Tasks.Status;
-import Tasks.Subtask;
-import Tasks.Task;
+import manager.Managers;
+import manager.TaskManager;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,7 @@ class TaskManagerTest {
     TaskManager taskManager;
 
     @BeforeEach
-    void beforeEach () {
+    void beforeEach() {
         taskManager = Managers.getDefault();
     }
 
@@ -29,7 +27,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void addEpic_EpicsWithTheSameIDsAreEqual () {
+    void addEpic_EpicsWithTheSameIDsAreEqual() {
         Epic expectedEpic = new Epic("Ep2", "D1", 1);
         Epic newEpic = new Epic("Ep2", "D1", 1);
         taskManager.addEpic(newEpic);
@@ -38,7 +36,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void addSubtask_SubtasksWithTheSameIDsAreEqual () {
+    void addSubtask_SubtasksWithTheSameIDsAreEqual() {
         Subtask expectedSubtask = new Subtask("St1", "D1", Status.NEW, 2, 1);
         Subtask newSubtask = new Subtask("St1", "D1", Status.NEW, 2, 1);
         Epic nEpic = new Epic("E", "D", 1);
@@ -50,15 +48,16 @@ class TaskManagerTest {
     }
 
     @Test
-    void addTask_TheSpecifiedIDsAndTheGeneratedIDsDoNotConflict () {
+    void addTask_TheSpecifiedIDsAndTheGeneratedIDsDoNotConflict() {
         Task newTask1 = new Task("Task2", "D2", Status.NEW);
         Task newTask = new Task("Task1", "D1", Status.NEW, 1);
         taskManager.addTask(newTask);
         taskManager.addTask(newTask1);
         Assertions.assertNotEquals(newTask1, newTask);
 }
+
     @Test
-    void inMemoryTaskManagerAddTaskEpicSubtaskAndGet () {
+    void inMemoryTaskManagerAddTaskEpicSubtaskAndGet() {
         Task newTask = new Task("Task1", "D1", Status.NEW, 1);
         taskManager.addTask(newTask);
         Epic newEpic = new Epic("Ep2", "D1", 2);
@@ -72,7 +71,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void updateStatusEpicTest () {
+    void updateStatusEpicTest() {
         Epic newEpic = new Epic("Name1", "D2", 1);
         taskManager.addEpic(newEpic);
         Subtask subtask0 = new Subtask("NameS1", "D2", Status.NEW, 2, 1);
