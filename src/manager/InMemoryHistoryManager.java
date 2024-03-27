@@ -5,64 +5,65 @@ import tasks.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private List<Task> history = new ArrayList<>();
-    //DoubleLinkedList<Task> taskHistory = new DoubleLinkedList<>();
-    //private Map<Integer, Node> connectingTasksAndNodes = new HashMap<>();
+    private Node head;
+    private Node tail;
+    private int size = 0;
+    private Map<Integer, Node> taskHistory = new HashMap<>();
+
 
     @Override
     public void add(Task task) {
-        history.add(task);
-        if (history.size() > 10) {
-            history.removeFirst();
+        if (taskHistory.containsKey(task.getIdNumber())) {
+            removeNode(taskHistory.remove(task.getIdNumber()));
         }
+        taskHistory.put(task.getIdNumber(), linkLast(task));
     }
 
     @Override
     public void remove(int id) {
-        history.remove(id);
+        removeNode(taskHistory.remove(id));
     }
 
     @Override
     public List<Task> getHistory() {
-       return history;
+        return getTasks();
     }
 
-
-}
-class DoubleLinkedList <Task> {
-    public Node<Task> head;
-    public Node <Task> tail;
-    public int size = 0;
-
-    DoubleLinkedList<Task> taskDoubleLinkedList = new DoubleLinkedList<>();
-
-
-    public void linkLast (Task task) {
-        final Node<Task> oldTail = tail;
-        final Node<Task> newTail = new Node<> (oldTail, task, null);
+    public Node linkLast(Task task) {
+        final Node oldTail = tail;
+        final Node newTail = new Node(oldTail, task, null);
         tail = newTail;
+        taskHistory.put(task.getIdNumber(), newTail);
         if (oldTail == null) {
             head = newTail;
         } else {
             oldTail.next = newTail;
             size++;
         }
+        return newTail;
     }
 
-    public List<Task> getTasks(Task task) {
-        taskDoubleLinkedList.linkLast(task);
-        ArrayList <Task> taskHistory= new ArrayList<>((Collection) taskDoubleLinkedList);
-        return taskHistory;
+    public List<Task> getTasks() {
+        List<Task> history = new ArrayList<>();
+        Node currentNode = head;
+        while (currentNode != null) {
+            history.add(currentNode.task);
+            currentNode = currentNode.next;
+        }
+        return history;
     }
 
-    public void removeNode(Node<Task> delNode) {
-        if (delNode == head) {
+    public void removeNode(Node delNode) {
+        if (delNode == head && delNode != tail) {
             head = delNode.next;
-        } else if (delNode == tail) {
+        } else if (delNode == tail && delNode != head) {
             tail = delNode.prev;
-        } else if (delNode != head && delNode != tail){
-            delNode.next.next = delNode.next;
-            delNode.prev.prev = delNode.prev;
+        } else if (delNode != head && delNode != tail) {
+            delNode.prev.next = delNode.next;
+            delNode.next.prev = delNode.prev;
+        } else {
+            head = null;
+            tail = null;
         }
     }
 }
