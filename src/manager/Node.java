@@ -1,24 +1,25 @@
 package manager;
 
+import tasks.Task;
+
 import java.util.Objects;
 
-public class Node <T> {
+public class Node {
 
-    public T task;
-    public Node<T> next;
-    public Node<T> prev;
+    public Task task;
+    public Node next;
+    public Node prev;
 
-    public Node(Node<T> prev, T data, Node<T> next) {
+    public Node(Node prev, Task task, Node next) {
         this.prev = prev;
-        this.task = data;
+        this.task = task;
         this.next = next;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Node<?> node)) return false;
+        if (!(o instanceof Node node)) return false;
         return Objects.equals(task, node.task) && Objects.equals(next, node.next) && Objects.equals(prev, node.prev);
     }
 
@@ -27,4 +28,7 @@ public class Node <T> {
         return Objects.hash(task, next, prev);
     }
 }
+
+
+
 
