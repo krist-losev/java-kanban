@@ -74,5 +74,20 @@ class HistoryManagerTest {
         assertEquals(history, history1);
     }
 
+    @Test
+    void addTask_noDublicatesInHistory() {
+        Task newTask = new Task("Task1", "D1", Status.NEW, 1);
+        taskManager.addTask(newTask);
+        Epic newEpic = new Epic("Ep2", "D1", 2);
+        taskManager.addEpic(newEpic);
+    }//тетс на проверку отсутствия дубликатов
+
+    //тест на проверку, что добавляется в конец
+
+    //тест, что удаление и добавление работают
+
+    //првоерить что при удалении подзадачи ее id не остаётся в эпике
+
+
 
 }
