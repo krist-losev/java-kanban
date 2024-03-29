@@ -6,7 +6,7 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private Map<Integer, Node> taskHistory = new HashMap<>();
+    public Map<Integer, Node> taskHistory = new HashMap<>();
     private Node head;
     private Node tail;
     private int size = 0;
@@ -51,14 +51,15 @@ public class InMemoryHistoryManager implements HistoryManager {
             history.add(currentNode.data);
             currentNode = currentNode.next;
         }
-        return history;
+        return new ArrayList<>(history);
     }
 
     public void removeNode(Node delNode) {
         if (delNode == head && delNode != tail) {
             head = delNode.next;
         } else if (delNode == tail && delNode != head) {
-            tail = delNode.prev;
+            tail = tail.prev;
+            tail.next = null;
         } else if (delNode != head && delNode != tail) {
             delNode.prev.next = delNode.next;
             delNode.next.prev = delNode.prev;
@@ -66,5 +67,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             head = null;
             tail = null;
         }
+        taskHistory.remove(delNode.data.getIdNumber());
     }
 }
