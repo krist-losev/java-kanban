@@ -9,13 +9,8 @@ import java.util.ArrayList;
 
 public class Main {
 
-    public static void main (String[] args) {
-        /* Создайте две задачи, эпик с тремя подзадачами и эпик без подзадач.
-Запросите созданные задачи несколько раз в разном порядке.
-После каждого запроса выведите историю и убедитесь, что в ней нет повторов.
-Удалите задачу, которая есть в истории, и проверьте, что при печати она не будет выводиться.
-Удалите эпик с тремя подзадачами и убедитесь, что из истории удалился как сам эпик, так и все его подзадачи.*/
-        TaskManager taskManager= Managers.getDefault();
+    public static void main(String[] args) {
+        TaskManager taskManager = Managers.getDefault();
 
         Task task0 = new Task("Съесть сыр", "Пообедать", Status.NEW);
         Task task = new Task("Искупаться", "Жариться в адском душе", Status.DONE);
@@ -59,6 +54,10 @@ public class Main {
         System.out.println("История запросов: " + taskManager.getHistory());
         taskManager.getSubtaskById(7);
         taskManager.getTaskById(4);
+        System.out.println("История запросов: " + taskManager.getHistory());
+        taskManager.getEpicById(2);
+        System.out.println("История запросов: " + taskManager.getHistory());
+        taskManager.deleteTaskById(4);
         System.out.println("История запросов: " + taskManager.getHistory());
     }
 }
