@@ -33,8 +33,9 @@ public class InMemoryTaskManager implements TaskManager {
         return newTask;
     }
 
+    //обновление задачи
     @Override
-    public void updateTask(Task updateTask) { //обновление задачи
+    public void updateTask(Task updateTask) {
         tasks.put(updateTask.getIdNumber(), updateTask);
     }
 
@@ -45,8 +46,9 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.remove(id);
     }
 
+    //Удаление всех задач
     @Override
-    public void clearTask() {  //Удаление всех задач
+    public void clearTask() {
         tasks.clear();
     }
 
@@ -159,8 +161,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    //Получение списка всех задач
     @Override
-    public List<Subtask> listSubtask() { //Получение списка всех задач
+    public List<Subtask> listSubtask() {
         return new ArrayList<Subtask>(subtasks.values());
     }
 
@@ -178,7 +181,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-
         return historyManager.getHistory();
     }
 
