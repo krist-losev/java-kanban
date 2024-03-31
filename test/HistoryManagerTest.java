@@ -37,7 +37,7 @@ class HistoryManagerTest {
         assertEquals(3, history.size());
     }
 
-@Test
+    @Test
     void addTask_TheTaskDoesNotChangeInHistory() {
         Task newTask = new Task("Task1", "D1", Status.NEW, 1);
         taskManager.addTask(newTask);
