@@ -23,7 +23,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             String line = Files.readString(file.toPath());
             List<String> string = List.of(line.split("\n"));
-            List <String> fileString =  new ArrayList<>(string);
+            List<String> fileString =  new ArrayList<>(string);
             fileString.remove("");
             for (int i = 1; i < fileString.size(); i++) {
                 if (i < fileString.size() - 2) {
@@ -82,7 +82,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private String taskToString (Task task) {
+    private String taskToString(Task task) {
         return String.format("%s,%s,%s,%s,%s,\n", task.getIdNumber(), TASK, task.getNameTask(),
                 task.getStatus(), task.getDescription());
     }
