@@ -22,41 +22,41 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         List<Integer> history;
         try {
             String line = Files.readString(file.toPath());
-                List<String> fileLine = List.of(line.split("\n"));
-                List<String> fileString = new ArrayList<> (fileLine);
-                fileString.remove(fileString.size()-2);
-                for (int i = 1; i < fileString.size(); i++) {
-                    if (i < fileString.size() - 2) {
-                        Task task = fromString(fileString.get(i + 1));
-                        switch (task.getTypeTask()) {
-                            case TASK:
-                                fileBackedTaskManager.tasks.put(task.getIdNumber(), task);
-                                break;
-                            case EPIC:
-                                Epic epic = (Epic) task;
-                                fileBackedTaskManager.epics.put(epic.getIdNumber(), epic);
-                                break;
-                            case SUBTASK:
-                                Subtask subtask = (Subtask) task;
-                                fileBackedTaskManager.subtasks.put(subtask.getIdNumber(), subtask);
-                                Epic epicWithASubtask = fileBackedTaskManager.epics.get(subtask.getIdEpic());
-                                epicWithASubtask.addSubtasksInEpic(subtask.getIdNumber());
-                                break;
-                        }
-                    } else {
-                        history = historyFromString(fileString.get(fileString.size() - 1));
-                        HistoryManager historyManager = fileBackedTaskManager.historyManager;
-                        for(Integer id : history) {
-                            if(fileBackedTaskManager.tasks.containsKey(id)) {
-                                historyManager.add(fileBackedTaskManager.tasks.get(id));
-                            } else if (fileBackedTaskManager.epics.containsKey(id)) {
-                                historyManager.add(fileBackedTaskManager.epics.get(id));
-                            } else if (fileBackedTaskManager.subtasks.containsKey(id)) {
-                                historyManager.add(fileBackedTaskManager.subtasks.get(id));
-                            }
+            List<String> string = List.of(line.split("\n"));
+            List <String> fileString =  new ArrayList<>(string);
+            fileString.remove("");
+            for (int i = 1; i < fileString.size(); i++) {
+                if (i < fileString.size() - 2) {
+                    Task task = fromString(fileString.get(i + 1));
+                    switch (task.getTypeTask()) {
+                        case TASK:
+                            fileBackedTaskManager.tasks.put(task.getIdNumber(), task);
+                            break;
+                        case EPIC:
+                            Epic epic = (Epic) task;
+                            fileBackedTaskManager.epics.put(epic.getIdNumber(), epic);
+                            break;
+                        case SUBTASK:
+                            Subtask subtask = (Subtask) task;
+                            fileBackedTaskManager.subtasks.put(subtask.getIdNumber(), subtask);
+                            Epic epicWithASubtask = fileBackedTaskManager.epics.get(subtask.getIdEpic());
+                            epicWithASubtask.addSubtasksInEpic(subtask.getIdNumber());
+                            break;
+                    }
+                } else {
+                    history = historyFromString(fileString.get(fileString.size() - 1));
+                    HistoryManager historyManager = fileBackedTaskManager.historyManager;
+                    for (Integer id : history) {
+                        if (fileBackedTaskManager.tasks.containsKey(id)) {
+                            historyManager.add(fileBackedTaskManager.tasks.get(id));
+                        } else if (fileBackedTaskManager.epics.containsKey(id)) {
+                            historyManager.add(fileBackedTaskManager.epics.get(id));
+                        } else if (fileBackedTaskManager.subtasks.containsKey(id)) {
+                            historyManager.add(fileBackedTaskManager.subtasks.get(id));
                         }
                     }
                 }
+            }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения файла");
         }
@@ -64,7 +64,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void save() {
-        try (FileWriter fileWriter = new FileWriter(file)) { //
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file))) {
             fileWriter.write("id, type, name, status, description, epic\n");
             for (Task task : listTask()) {
                 fileWriter.write(taskToString(task));
@@ -235,8 +235,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-    File newFile = new File("resources/task.csv");
-    FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(Managers.getDefaultHistoryManager(), newFile);
+        File newFile = new File("resources/task.csv");
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(Managers.getDefaultHistoryManager(), newFile);
 
         Task task0 = new Task("Съесть сыр", "Пообедать", Status.NEW);
         Task task = new Task("Искупаться", "Жариться в адском душе", Status.DONE);
@@ -281,9 +281,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         fileBackedTaskManager.getSubtaskById(9);
         System.out.println("История запросов: " + fileBackedTaskManager.getHistory());
 
-       FileBackedTaskManager newFileBM = FileBackedTaskManager.loadFromFile(newFile);
-       System.out.println(newFileBM.getHistory());
-
+        FileBackedTaskManager newFileBM = FileBackedTaskManager.loadFromFile(newFile);
+        System.out.println(newFileBM.getHistory());
     }
 
 }
