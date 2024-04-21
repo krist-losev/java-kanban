@@ -11,7 +11,6 @@ public class Epic extends Task {
     public Epic(String nameTask, String description, int idNumber) {
         super(nameTask, description, Status.NEW, idNumber);
         this.subtasksId = new ArrayList<>();
-
     }
 
     public void addSubtasksInEpic(int idSubtask) {
@@ -25,6 +24,11 @@ public class Epic extends Task {
 
     public void clearSubtask() {
         subtasksId.clear();
+    }
+
+    @Override
+    public TypeTask getTypeTask() {
+        return TypeTask.EPIC;
     }
 }
 

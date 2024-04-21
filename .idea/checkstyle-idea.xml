@@ -10,10 +10,6 @@
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
-<<<<<<< HEAD
-=======
-        <ConfigurationLocation id="d3470e5d-9ec8-4ce5-98c4-58696d729362" type="LOCAL_FILE" scope="All" description="PracticumCheckstyle">$USER_HOME$/Downloads/checkstyle.xml</ConfigurationLocation>
->>>>>>> sprint_6-solution
       </list>
     </option>
   </component>
