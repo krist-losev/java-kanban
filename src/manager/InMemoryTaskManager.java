@@ -24,9 +24,6 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = historyManager;
     }
 
-    public InMemoryTaskManager() {
-    }
-
     //создание задачи
     @Override
     public Task addTask(Task newTask) {
