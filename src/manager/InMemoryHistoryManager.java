@@ -18,7 +18,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         linkLast(task);
         taskHistory.put(task.getIdNumber(), tail);
-
     }
 
     @Override

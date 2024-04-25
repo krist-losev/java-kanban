@@ -8,6 +8,7 @@ public class Task {
     private String nameTask;
     private String description;
     private Status status;
+    private TypeTask typeTask;
 
     public Task(String name, String description, Status status, int idNumber) {
         this.nameTask = name;
@@ -20,9 +21,7 @@ public class Task {
         this.nameTask = name;
         this.description = description;
         this.status = status;
-
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -77,6 +76,11 @@ public class Task {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public TypeTask getTypeTask() {
+        return TypeTask.TASK;
+    }
+
 }
 
 
