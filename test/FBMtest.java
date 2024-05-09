@@ -6,10 +6,12 @@ import tasks.Task;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FBMtest {
+public class FBMtest extends TaskManagerTest <FileBackedTaskManager> {
 
     @Test
     void savingAndUploadingAnEmptyFile() throws IOException {
@@ -26,8 +28,10 @@ public class FBMtest {
     void savingAndUploadingMultipleTasks () throws IOException {
         File newFile = File.createTempFile("test", ".csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(Managers.getDefaultHistoryManager(), newFile);
-        Task t1 = new Task("name t1", "desc t1", Status.NEW);
-        Task t2 = new Task("name t2", "desc t2", Status.IN_PROGRESS);
+        Task t1 = new Task("name t1", "desc t1", Status.NEW,
+                LocalDateTime.of(2024, 05, 1, 00, 00), Duration.ofMinutes(10));
+        Task t2 = new Task("name t2", "desc t2", Status.IN_PROGRESS,
+                LocalDateTime.of(2024, 04, 30, 10, 15), Duration.ofMinutes(30));
         manager.addTask(t1);
         manager.addTask(t2);
         manager.getTaskById(t1.getIdNumber());
@@ -36,6 +40,7 @@ public class FBMtest {
         assertTrue(!manager.getHistory().isEmpty());
 
         FileBackedTaskManager manager2 = FileBackedTaskManager.loadFromFile(newFile);
+        System.out.println(manager2.getHistory());
         assertTrue(!manager2.getHistory().isEmpty());
         assertTrue(!manager2.listTask().isEmpty());
     }
