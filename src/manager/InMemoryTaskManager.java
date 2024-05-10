@@ -40,9 +40,6 @@ public class InMemoryTaskManager implements TaskManager {
     //обновление задачи
     @Override
     public void updateTask(Task updateTask) { //удалить из приоритета старый и добавить новый
-        if (timeIsCrossing(updateTask)) {
-            System.out.println("Время задач пересекается. Пожалуйста, выберите другое время.");
-        }
         tasks.put(updateTask.getIdNumber(), updateTask);
         prioritizedTasks.removeIf(oldTask -> oldTask.getIdNumber() == updateTask.getIdNumber());
         prioritizedTasks.add(updateTask);
@@ -156,9 +153,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask updateSubtask) {
-        if (timeIsCrossing(updateSubtask)) {
-            System.out.println("Время задач пересекается. Пожалуйста, выберите другое время.");
-        }
         subtasks.put(updateSubtask.getIdNumber(), updateSubtask);
         updateEpic(epics.get(updateSubtask.getIdNumber()));
         updateStatus(epics.get(updateSubtask.getIdEpic()));
@@ -241,15 +235,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     //метод для подсчета времени старта эпика и его продолжительность
         private void timeCounting(Epic epic) {
-        LocalDateTime startTime;
-        LocalDateTime endTime;
-        Duration duration;
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        Duration duration = null;
         List<Subtask> subtaskInEpic = new ArrayList<>();
-        if (epic.getSubtasksId().isEmpty()) {
-            startTime = null;
-            endTime = null;
-            duration = null;
-        } else {
+        if (!epic.getSubtasksId().isEmpty()) {
             for (Integer sub : epic.getSubtasksId()) {
                 subtaskInEpic.add(subtasks.get(sub));
             }
@@ -258,10 +248,6 @@ public class InMemoryTaskManager implements TaskManager {
                 startTime = subtaskInEpic.getFirst().getStartTime();
                 endTime = subtaskInEpic.getLast().getEndTime();
                 duration = Duration.between(startTime, endTime);
-            } else {
-                startTime = null;
-                duration = null;
-                endTime = null;
             }
         }
         epic.setStartTime(startTime);
@@ -273,13 +259,11 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean timeIsCrossing(Task newTask) {
         boolean crossing = false;
         if (prioritizedTasks.isEmpty()) {
-            crossing = false;
+            return crossing;
         }
         LocalDateTime begin = newTask.getStartTime();
         LocalDateTime end = newTask.getEndTime();
-        if (begin == null) {
-            crossing = false;
-        } else {
+        if (begin != null) {
             for (Task oldTask : prioritizedTasks) {
                 LocalDateTime start = oldTask.getStartTime();
                 LocalDateTime finish = oldTask.getEndTime();

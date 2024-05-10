@@ -128,6 +128,6 @@ public class InMemoryTaskManagerTest extends TaskManagerTest <InMemoryTaskManage
         Assertions.assertEquals(Status.IN_PROGRESS, e.getStatus());
     }
 
-    }
+}
 
 

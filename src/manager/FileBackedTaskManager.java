@@ -14,7 +14,7 @@ import static tasks.TypeTask.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
@@ -70,7 +70,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         fileBackedTaskManager.getSubtaskById(subtask1.getIdNumber());
         fileBackedTaskManager.getTaskById(task.getIdNumber());
         fileBackedTaskManager.getTaskById(task0.getIdNumber());
-        //fileBackedTaskManager.getSubtaskById(subtask3.getIdNumber());
         System.out.println("История запросов: " + fileBackedTaskManager.getHistory());
 
         FileBackedTaskManager newFileBM = FileBackedTaskManager.loadFromFile(newFile);
@@ -241,7 +240,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String taskString = null;
         String startTime = null;
         if (task.getStartTime() != null) {
-            startTime = task.getStartTime().format(formatter);
+            startTime = task.getStartTime().format(FORMATTER);
         }
         Long durationTask = null;
         if (task.getDuration() != null) {
@@ -274,7 +273,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String start = parts[5];
         LocalDateTime startTime = null;
         if (!start.equals("null")) {
-            startTime = LocalDateTime.parse(start, formatter);
+            startTime = LocalDateTime.parse(start, FORMATTER);
         }
         String durationTask = parts[6];
         Duration duration = null;
