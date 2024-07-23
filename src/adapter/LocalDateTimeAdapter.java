@@ -8,14 +8,15 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+//адаптер для преобразование LocalDateTime в Json
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     @Override
     public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
         if (localDateTime != null) {
-            jsonWriter.value(localDateTime.format(formatter));
+            jsonWriter.value(localDateTime.format(FORMATTER));
         } else {
             jsonWriter.nullValue();
         }
@@ -23,6 +24,6 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public LocalDateTime read(JsonReader jsonReader) throws IOException {
-        return LocalDateTime.parse(jsonReader.nextString(), formatter);
+        return LocalDateTime.parse(jsonReader.nextString(), FORMATTER);
     }
 }

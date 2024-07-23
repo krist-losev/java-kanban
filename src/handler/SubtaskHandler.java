@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import manager.TaskManager;
 import tasks.Subtask;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,6 @@ public class SubtaskHandler extends Handler {
         try (httpExchange) {
             String path = httpExchange.getRequestURI().getPath();
             String method = httpExchange.getRequestMethod();
-            Subtask newSubtask;
 
             switch (method) {
                 case "GET": {
@@ -27,12 +27,7 @@ public class SubtaskHandler extends Handler {
                         String pathTaskId = path.replaceFirst("/subtasks/", "");
                         int subtaskId = parsePathTaskId(pathTaskId);
                         if (subtaskId != -1) {
-                            try {
-                                Optional<Subtask> subtask = manager.getSubtaskById(subtaskId);
-                                writeResponse(httpExchange, gson.toJson(subtask.get()), 200);
-                            } catch (Exception e) {
-                                writeResponse(httpExchange, "Подзадача с данным id не найдена", 200);
-                            }
+                            getSubtaskWithTheCorrectId(httpExchange, subtaskId);
                         } else {
                             writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
@@ -48,13 +43,7 @@ public class SubtaskHandler extends Handler {
                     if (Pattern.matches("^/subtasks$", path)) {
                         String requestBody = readResponse(httpExchange);
                         if (requestBody != null) {
-                            newSubtask = gson.fromJson(requestBody, Subtask.class);
-                            if (manager.addTask(newSubtask) != null) {
-                                writeResponse(httpExchange, gson.toJson(newSubtask), 201);
-                                System.out.println("Подзадача успешно добавлен.");
-                            } else {
-                                writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
-                            }
+                            postSubtaskWithBodyNotNull(httpExchange, requestBody);
                         } else {
                             httpExchange.sendResponseHeaders(500, 0);
                         }
@@ -63,14 +52,7 @@ public class SubtaskHandler extends Handler {
                         int taskId = parsePathTaskId(pathSubId);
                         String requestBody = readResponse(httpExchange);
                         if (taskId != -1) {
-                            if (requestBody != null) {
-                                newSubtask = gson.fromJson(requestBody, Subtask.class);
-                                manager.updateTask(newSubtask);
-                                writeResponse(httpExchange, gson.toJson(newSubtask), 201);
-                                System.out.println("Эпик успешно обновлен!");
-                            }  else {
-                                httpExchange.sendResponseHeaders(500, 0);
-                            }
+                            updateSubtaskWithCorrectId(httpExchange, requestBody);
                         } else {
                             writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
@@ -82,12 +64,7 @@ public class SubtaskHandler extends Handler {
                         String pathSubTaskId = path.replaceFirst("/subtasks/", "");
                         int subtaskId = parsePathTaskId(pathSubTaskId);
                         if (subtaskId != -1) {
-                            try {
-                                manager.deleteSubtaskById(subtaskId);
-                                writeResponse(httpExchange, "Задача успешно удалена.", 200);
-                            } catch (Exception e) {
-                                writeResponse(httpExchange, "Задачи с таким id не существует!", 404);
-                            }
+                            deleteSubtaskWithCorrectId(httpExchange, subtaskId);
                         } else {
                             writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
@@ -103,6 +80,49 @@ public class SubtaskHandler extends Handler {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //вынесено в отдельный метод поиск задачи с корреткным идентификатором
+    public void getSubtaskWithTheCorrectId(HttpExchange httpExchange, int id) throws IOException {
+        try {
+            Optional<Subtask> subtask = manager.getSubtaskById(id);
+            writeResponse(httpExchange, gson.toJson(subtask.get()), 200);
+        } catch (Exception e) {
+            writeResponse(httpExchange, "Подзадача с данным id не найдена", 200);
+        }
+    }
+
+    //вынесено в отдельный метод обновление задачи с корректным идентификатором
+    public void updateSubtaskWithCorrectId(HttpExchange httpExchange, String requestBody) throws IOException {
+        if (requestBody != null) {
+            Subtask newSubtask = gson.fromJson(requestBody, Subtask.class);
+            manager.updateTask(newSubtask);
+            writeResponse(httpExchange, gson.toJson(newSubtask), 201);
+            System.out.println("Эпик успешно обновлен!");
+        }  else {
+            httpExchange.sendResponseHeaders(500, 0);
+        }
+    }
+
+    //вынесено в отдельный метод публикация задачи с корректным идентификатором
+    public void postSubtaskWithBodyNotNull(HttpExchange httpExchange, String requestBody) throws IOException {
+        Subtask newSubtask = gson.fromJson(requestBody, Subtask.class);
+        if (manager.addTask(newSubtask) != null) {
+            writeResponse(httpExchange, gson.toJson(newSubtask), 201);
+            System.out.println("Подзадача успешно добавлен.");
+        } else {
+            writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
+        }
+    }
+
+    //вынесено в отдельный метод удаление задачи с корректным идентификатором
+    public void deleteSubtaskWithCorrectId(HttpExchange httpExchange, int subtaskId) throws IOException {
+        try {
+            manager.deleteSubtaskById(subtaskId);
+            writeResponse(httpExchange, "Задача успешно удалена.", 200);
+        } catch (Exception e) {
+            writeResponse(httpExchange, "Задачи с таким id не существует!", 404);
         }
     }
 

@@ -22,7 +22,7 @@ public abstract class Handler implements HttpHandler {
     public abstract void handle(HttpExchange httpExchange) throws IOException;
 
     protected String readResponse(HttpExchange httpExchange) throws IOException {
-           return new String(httpExchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        return new String(httpExchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
     }
 
     protected void writeResponse(HttpExchange httpExchange, String responseText, int code) throws IOException {
@@ -40,6 +40,4 @@ public abstract class Handler implements HttpHandler {
             return -1;
         }
     }
-
-
 }

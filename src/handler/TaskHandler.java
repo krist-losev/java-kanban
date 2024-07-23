@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import manager.TaskManager;
 import tasks.Task;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,6 @@ public class TaskHandler extends Handler {
         try (httpExchange) {
             String path = httpExchange.getRequestURI().getPath();
             String method = httpExchange.getRequestMethod();
-            Task newTask;
 
             switch (method) {
                 case "GET": {
@@ -27,12 +27,7 @@ public class TaskHandler extends Handler {
                         String pathTaskId = path.replaceFirst("/tasks/", "");
                         int taskId = parsePathTaskId(pathTaskId);
                         if (taskId != -1) {
-                            try {
-                                Optional<Task> task = manager.getTaskById(taskId);
-                                writeResponse(httpExchange, gson.toJson(task.get()), 200);
-                            } catch (Exception e) {
-                                writeResponse(httpExchange, "Задачи с таким id не существует!", 404);
-                            }
+                            getTaskWithTheCorrectId(httpExchange, taskId);
                         } else {
                             writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
@@ -48,14 +43,7 @@ public class TaskHandler extends Handler {
                     if (Pattern.matches("^/tasks$", path)) {
                         String requestBody = readResponse(httpExchange);
                         if (requestBody != null) {
-                            newTask = gson.fromJson(requestBody, Task.class);
-                            if (manager.addTask(newTask) != null) {
-                                String bodyTask = gson.toJson(newTask);
-                                writeResponse(httpExchange, bodyTask, 201);
-                                System.out.println("Задача успешно добавлена.");
-                            } else {
-                                writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
-                            }
+                            postTaskWithBodyNotNull(httpExchange, requestBody);
                         } else {
                             httpExchange.sendResponseHeaders(500, 0);
                         }
@@ -64,14 +52,7 @@ public class TaskHandler extends Handler {
                         int taskId = parsePathTaskId(pathTaskId);
                         String requestBody = readResponse(httpExchange);
                         if (taskId != -1) {
-                            if (requestBody != null) {
-                                newTask = gson.fromJson(requestBody, Task.class);
-                                manager.updateTask(newTask);
-                                writeResponse(httpExchange, gson.toJson(newTask), 201);
-                                System.out.println("Задача успешно обновлена!");
-                            }  else {
-                                httpExchange.sendResponseHeaders(500, 0);
-                            }
+                            updateTaskWithCorrectId(httpExchange, requestBody);
                         } else {
                             writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
@@ -83,9 +64,7 @@ public class TaskHandler extends Handler {
                         String pathTaskId = path.replaceFirst("/tasks/", "");
                         int taskId = parsePathTaskId(pathTaskId);
                         if (taskId != -1) {
-                            manager.deleteTaskById(taskId);
-                            String body = "Задача с идентификатором " + taskId + " успешно удалена.";
-                            writeResponse(httpExchange, body, 200);
+                            deleteTaskWithCorrectBody(httpExchange,taskId);
                         } else {
                             writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
@@ -103,4 +82,49 @@ public class TaskHandler extends Handler {
             e.printStackTrace();
         }
     }
+
+    //вынесено в отдельный метод поиск задачи с корректным идентификтором
+    public void getTaskWithTheCorrectId(HttpExchange httpExchange, int id) throws IOException {
+        try {
+            Optional<Task> task = manager.getTaskById(id);
+            writeResponse(httpExchange, gson.toJson(task.get()), 200);
+        } catch (Exception e) {
+            writeResponse(httpExchange, "Задачи с таким id не существует!", 404);
+        }
+    }
+
+    //вынесено в отдельный метод обновление задачи с корректным идентификатором
+    public void updateTaskWithCorrectId(HttpExchange httpExchange, String requestBody) throws IOException {
+        if (requestBody != null) {
+            Task t = gson.fromJson(requestBody, Task.class);
+            manager.updateTask(t);
+            writeResponse(httpExchange, gson.toJson(t), 201);
+            System.out.println("Задача успешно обновлена!");
+        }  else {
+            httpExchange.sendResponseHeaders(500, 0);
+        }
+    }
+
+    //вынесено в отдельный метод публикация задачи с отделным идентификатором
+    public void postTaskWithBodyNotNull(HttpExchange httpExchange, String requestBody) throws IOException {
+        Task newTask = gson.fromJson(requestBody, Task.class);
+        if (manager.addTask(newTask) != null) {
+            writeResponse(httpExchange, gson.toJson(newTask), 201);
+            System.out.println("Задача успешно добавлена.");
+        } else {
+            writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
+        }
+    }
+
+    //вынесено в отдельный метод и добавлено обработка исключения при удалении задачи
+    public void deleteTaskWithCorrectBody(HttpExchange httpExchange, int taskId) throws IOException {
+        try {
+            manager.deleteTaskById(taskId);
+            String body = "Задача с идентификатором " + taskId + " успешно удалена.";
+            writeResponse(httpExchange, body, 200);
+        } catch (Exception e) {
+            writeResponse(httpExchange, "Задача с таким номером не найдена.", 404);
+        }
+    }
+
 }
