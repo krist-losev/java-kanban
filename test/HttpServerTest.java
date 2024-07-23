@@ -1,7 +1,4 @@
 import com.google.gson.Gson;
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import manager.Managers;
 import manager.TaskManager;
 import org.junit.jupiter.api.AfterEach;
@@ -10,20 +7,16 @@ import org.junit.jupiter.api.Test;
 import server.HttpTaskServer;
 import tasks.Epic;
 import tasks.Status;
-import tasks.Subtask;
 import tasks.Task;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,7 +56,7 @@ public class HttpServerTest {
         List<Task> tasksFromManager = taskManager.listTask();
         assertNotNull(tasksFromManager, "Задачи не возвращаются");
         assertEquals(1, tasksFromManager.size());
-        assertNotEquals("Test 2", tasksFromManager.get(0).getNameTask(), "Некорректное имя задачи");
+        assertNotEquals("Test 2", tasksFromManager.getFirst().getNameTask(), "Некорректное имя задачи");
     }
 
     @Test
@@ -95,7 +88,7 @@ public class HttpServerTest {
         Task e = new Task("Test 1", "Testing task 1", Status.IN_PROGRESS,
                 LocalDateTime.of(2012, 11, 12, 14, 15), Duration.ofMinutes(4));
         Task e1 = new Task("222", "fff", Status.NEW,
-                LocalDateTime.of(2015, 11, 16, 02, 00), Duration.ofMinutes(16));
+                LocalDateTime.of(2015, 11, 16, 2, 0), Duration.ofMinutes(16));
         taskManager.addTask(e);
         taskManager.addTask(e1);
         URI url = URI.create(URL + "/tasks");
