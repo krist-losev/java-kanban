@@ -8,7 +8,6 @@ import manager.TaskManager;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-
 public abstract class Handler implements HttpHandler {
 
     protected TaskManager manager;
@@ -29,7 +28,7 @@ public abstract class Handler implements HttpHandler {
     protected void writeResponse(HttpExchange httpExchange, String responseText, int code) throws IOException {
         byte[] responseBytes = responseText.getBytes(StandardCharsets.UTF_8);
         httpExchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        httpExchange.sendResponseHeaders(200, responseBytes.length);
+        httpExchange.sendResponseHeaders(code, responseBytes.length);
         httpExchange.getResponseBody().write(responseBytes);
         httpExchange.close();
     }

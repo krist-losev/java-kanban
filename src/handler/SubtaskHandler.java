@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 public class SubtaskHandler extends Handler {
 
-
     public SubtaskHandler(TaskManager manager, Gson gson) {
         super(manager, gson);
     }
@@ -20,6 +19,7 @@ public class SubtaskHandler extends Handler {
         try (httpExchange) {
             String path = httpExchange.getRequestURI().getPath();
             String method = httpExchange.getRequestMethod();
+            Subtask newSubtask;
 
             switch (method) {
                 case "GET": {
@@ -45,26 +45,37 @@ public class SubtaskHandler extends Handler {
                     break;
                 }
                 case "POST": {
-                    String requestBody = readResponse(httpExchange);
-                    Subtask newSubtask = gson.fromJson(requestBody, Subtask.class);
-                    if (newSubtask.getIdNumber() == 0 && manager.listSubtask().contains(newSubtask)) {
-                        try {
-                            manager.updateSubtask(newSubtask);
-                            writeResponse(httpExchange, gson.toJson(newSubtask), 201);
-                            System.out.println("Задача успешно обновлена!");
-                        } catch (Exception e) {
-                            writeResponse(httpExchange,
-                                    "Обновленная задача пересекается с существующими", 406);
+                    if (Pattern.matches("^/subtasks$", path)) {
+                        String requestBody = readResponse(httpExchange);
+                        if (requestBody != null) {
+                            newSubtask = gson.fromJson(requestBody, Subtask.class);
+                            if (manager.addTask(newSubtask) != null) {
+                                writeResponse(httpExchange, gson.toJson(newSubtask), 201);
+                                System.out.println("Подзадача успешно добавлен.");
+                            } else {
+                                writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
+                            }
+                        } else {
+                            httpExchange.sendResponseHeaders(500, 0);
                         }
-                    } else {
-                        try {
-                            manager.addSubtask(newSubtask);
-                            writeResponse(httpExchange, gson.toJson(newSubtask), 201);
-                        } catch (Exception e) {
-                            writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
+                    } else if (Pattern.matches("^/subtasks/\\d+$", path)) {
+                        String pathSubId = path.replaceFirst("/subtasks/", "");
+                        int taskId = parsePathTaskId(pathSubId);
+                        String requestBody = readResponse(httpExchange);
+                        if (taskId != -1) {
+                            if (requestBody != null) {
+                                newSubtask = gson.fromJson(requestBody, Subtask.class);
+                                manager.updateTask(newSubtask);
+                                writeResponse(httpExchange, gson.toJson(newSubtask), 201);
+                                System.out.println("Эпик успешно обновлен!");
+                            }  else {
+                                httpExchange.sendResponseHeaders(500, 0);
+                            }
+                        } else {
+                            writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
-                        break;
                     }
+                    break;
                 }
                 case "DELETE": {
                     if (Pattern.matches("^/subtasks/\\d+$", path)) {

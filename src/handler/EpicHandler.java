@@ -18,6 +18,7 @@ public class EpicHandler extends Handler {
         try (httpExchange) {
             String path = httpExchange.getRequestURI().getPath();
             String method = httpExchange.getRequestMethod();
+            Epic newEpic;
 
             switch (method) {
                 case "GET": {
@@ -52,26 +53,37 @@ public class EpicHandler extends Handler {
                     break;
                 }
                 case "POST": {
-                    String requestBody = readResponse(httpExchange);
-                    Epic newEpic = gson.fromJson(requestBody, Epic.class);
-                    Optional<Epic> id = Optional.of(newEpic);
-                    if (id.isPresent() && manager.listEpic().contains(newEpic)) {
-                        try {
-                            manager.updateEpic(newEpic);
-                            writeResponse(httpExchange, gson.toJson(newEpic), 201);
-                        } catch (Exception e) {
-                            writeResponse(httpExchange,
-                                    "Обновленный эпик пересекается с существующими", 406);
+                    if (Pattern.matches("^/epics$", path)) {
+                        String requestBody = readResponse(httpExchange);
+                        if (requestBody != null) {
+                            newEpic = gson.fromJson(requestBody, Epic.class);
+                            if (manager.addTask(newEpic) != null) {
+                                writeResponse(httpExchange, gson.toJson(newEpic), 201);
+                                System.out.println("Эпик успешно добавлен.");
+                            } else {
+                                writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
+                            }
+                        } else {
+                            httpExchange.sendResponseHeaders(500, 0);
                         }
-                    } else {
-                        try {
-                            manager.addEpic(newEpic);
-                            writeResponse(httpExchange, gson.toJson(newEpic), 201);
-                        } catch (Exception e) {
-                            writeResponse(httpExchange, "Новый эпик пересекается с существующими", 406);
+                    } else if (Pattern.matches("^/epics/\\d+$", path)) {
+                        String pathEpicId = path.replaceFirst("/tasks/", "");
+                        int taskId = parsePathTaskId(pathEpicId);
+                        String requestBody = readResponse(httpExchange);
+                        if (taskId != -1) {
+                            if (requestBody != null) {
+                                newEpic = gson.fromJson(requestBody, Epic.class);
+                                manager.updateTask(newEpic);
+                                writeResponse(httpExchange, gson.toJson(newEpic), 201);
+                                System.out.println("Эпик успешно обновлен!");
+                            }  else {
+                                httpExchange.sendResponseHeaders(500, 0);
+                            }
+                        } else {
+                            writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
-                        break;
                     }
+                    break;
                 }
                 case "DELETE": {
                     if (Pattern.matches("^/epics/\\d+$", path)) {

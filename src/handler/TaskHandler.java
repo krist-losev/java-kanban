@@ -16,9 +16,10 @@ public class TaskHandler extends Handler {
 
     @Override
     public void handle(HttpExchange httpExchange) {
-        try {
+        try (httpExchange) {
             String path = httpExchange.getRequestURI().getPath();
             String method = httpExchange.getRequestMethod();
+            Task newTask;
 
             switch (method) {
                 case "GET": {
@@ -44,25 +45,38 @@ public class TaskHandler extends Handler {
                     break;
                 }
                 case "POST": {
-                    String requestBody = readResponse(httpExchange);
-                    Task newTask = gson.fromJson(requestBody, Task.class);
-                    if (manager.listTask().contains(newTask.getIdNumber())) {
-                        try {
-                            manager.updateTask(newTask);
-                            writeResponse(httpExchange, gson.toJson(newTask), 201);
-                            System.out.println("Задача успешно обновлена!");
-                        } catch (Exception e) {
-                            writeResponse(httpExchange, "Обновленная задача пересекается с существующими", 406);
+                    if (Pattern.matches("^/tasks$", path)) {
+                        String requestBody = readResponse(httpExchange);
+                        if (requestBody != null) {
+                            newTask = gson.fromJson(requestBody, Task.class);
+                            if (manager.addTask(newTask) != null) {
+                                String bodyTask = gson.toJson(newTask);
+                                writeResponse(httpExchange, bodyTask, 201);
+                                System.out.println("Задача успешно добавлена.");
+                            } else {
+                                writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
+                            }
+                        } else {
+                            httpExchange.sendResponseHeaders(500, 0);
                         }
-                    } else {
-                        try {
-                            manager.addTask(newTask);
-                            writeResponse(httpExchange, gson.toJson(newTask), 201);
-                        } catch (Exception e) {
-                            writeResponse(httpExchange, "Новая задача пересекается с существующими", 406);
+                    } else if (Pattern.matches("^/tasks/\\d+$", path)) {
+                        String pathTaskId = path.replaceFirst("/tasks/", "");
+                        int taskId = parsePathTaskId(pathTaskId);
+                        String requestBody = readResponse(httpExchange);
+                        if (taskId != -1) {
+                            if (requestBody != null) {
+                                newTask = gson.fromJson(requestBody, Task.class);
+                                manager.updateTask(newTask);
+                                writeResponse(httpExchange, gson.toJson(newTask), 201);
+                                System.out.println("Задача успешно обновлена!");
+                            }  else {
+                                httpExchange.sendResponseHeaders(500, 0);
+                            }
+                        } else {
+                            writeResponse(httpExchange, "Получен некорректный идентификатор!", 404);
                         }
-                        break;
                     }
+                    break;
                 }
                 case "DELETE": {
                     if (Pattern.matches("^/tasks/\\d+$", path)) {
@@ -87,8 +101,6 @@ public class TaskHandler extends Handler {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-                httpExchange.close();
         }
     }
 }

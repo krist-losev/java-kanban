@@ -30,11 +30,11 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Время задач пересекается. Пожалуйста, выберите другое время.");
             return null;
         }
-        int newTaskId = generateId();
-        newTask.setIdNumber(newTaskId);
-        tasks.put(newTaskId, newTask);
-        prioritizedTasks.add(newTask);
-        return newTask;
+            int newTaskId = generateId();
+            newTask.setIdNumber(newTaskId);
+            tasks.put(newTaskId, newTask);
+            prioritizedTasks.add(newTask);
+            return newTask;
     }
 
     //обновление задачи

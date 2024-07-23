@@ -9,6 +9,8 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class InMemoryTaskManagerTest extends TaskManagerTest <InMemoryTaskManager> {
@@ -126,6 +128,16 @@ public class InMemoryTaskManagerTest extends TaskManagerTest <InMemoryTaskManage
         e.addSubtasksInEpic(2);
         e.addSubtasksInEpic(3);
         Assertions.assertEquals(Status.IN_PROGRESS, e.getStatus());
+    }
+
+    @Test
+    void crossingTask() {
+        Task task = new Task("Test 1", "Testing task 1", Status.NEW,
+                LocalDateTime.of(2020, 11, 12, 16, 16), Duration.ofMinutes(5));
+        Assertions.assertNotEquals(null, taskManager.addTask(task));
+        Task task1 = new Task("Test 1", "Testing task 1", Status.NEW,
+                LocalDateTime.of(2020, 11, 12, 16, 16), Duration.ofMinutes(5));
+        Assertions.assertEquals(null, taskManager.addTask(task1));
     }
 
 }
