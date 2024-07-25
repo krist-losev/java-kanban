@@ -66,15 +66,15 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasks.values());
     }
 
-   @Override
-   public Optional<Task> getTaskById(int id) {
-       Optional<Task> taskById = Optional.of(tasks.get(id));
-       if (taskById.isEmpty()) {
-           System.out.println("Задачи с таким номером нет!");
-           return Optional.empty();
-       }
-       historyManager.add(taskById.get());
-       return taskById;
+    @Override
+    public Optional<Task> getTaskById(int id) {
+        Optional<Task> taskById = Optional.of(tasks.get(id));
+        if (taskById.isEmpty()) {
+            System.out.println("Задачи с таким номером нет!");
+            return Optional.empty();
+        }
+        historyManager.add(taskById.get());
+        return taskById;
     }
 
     //создание задачи
@@ -123,15 +123,15 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(epics.values());
     }
 
-   @Override
-   public Optional<Epic> getEpicById(int id) {
-       Optional<Epic> epicById = Optional.of(epics.get(id));
-       if (epicById.isEmpty()) {
-           System.out.println("Эпика с таким номером нет!");
-           return Optional.empty();
-       }
-       historyManager.add(epicById.get());
-       return epicById;
+    @Override
+    public Optional<Epic> getEpicById(int id) {
+        Optional<Epic> epicById = Optional.of(epics.get(id));
+        if (epicById.isEmpty()) {
+            System.out.println("Эпика с таким номером нет!");
+            return Optional.empty();
+        }
+        historyManager.add(epicById.get());
+        return epicById;
     }
 
     @Override
@@ -165,8 +165,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtaskById(int id) {
         Subtask subtask = subtasks.get(id);
-        epics.get(subtask.getIdEpic()).getSubtasksId().remove(id);
+        Epic epic = epics.get(subtask.getIdEpic());
         subtasks.remove(id);
+        epic.getSubtasksId().remove(subtask);
         historyManager.remove(id);
         prioritizedTasks.remove(subtask);
         updateStatus(epics.get(subtask.getIdEpic()));
@@ -234,7 +235,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     //метод для подсчета времени старта эпика и его продолжительность
-        private void timeCounting(Epic epic) {
+    private void timeCounting(Epic epic) {
         LocalDateTime startTime = null;
         LocalDateTime endTime = null;
         Duration duration = null;
